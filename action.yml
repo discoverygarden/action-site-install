@@ -14,7 +14,7 @@ inputs:
   COMPOSER_AUTH:
     description: 'The Composer auth.json file'
     required: true
-    
+
 runs: 
   using: composite
   steps:
@@ -27,6 +27,9 @@ runs:
     - name: Login to Amazon ECR
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v2
+      with: 
+        role-to-assume: ${{ inputs.ECR_PUSH_ROLE }}
+        aws-region: ${{ inputs.ECR_AWS_REGION }}
       
     - name: Configure git
       shell: bash
