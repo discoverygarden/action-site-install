@@ -2,12 +2,12 @@ name: Install Drupal
 description: Install Drupal using DDEV to test config
 
 inputs:
-  ECR_PUSH_ROLE:
-    description: 'The role to assume to push to ECR'
-    required: true
-  ECR_AWS_REGION:
-    description: 'The AWS region for ECR'
-    required: true
+  # ECR_PUSH_ROLE:
+  #   description: 'The role to assume to push to ECR'
+  #   required: true
+  # ECR_AWS_REGION:
+  #   description: 'The AWS region for ECR'
+  #   required: true
   COMPOSER_SSH_KEY:
     description: 'The SSH key for Composer'
     required: true
@@ -25,8 +25,8 @@ runs:
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v3
       with:
-        role-to-assume: ${{ inputs.ECR_PUSH_ROLE }}
-        aws-region: ${{ inputs.ECR_AWS_REGION }}
+        role-to-assume: ${{ secrets.ECR_PUSH_ROLE }}
+        aws-region: us-east-1
         
     - name: Login to Amazon ECR
       id: login-ecr
