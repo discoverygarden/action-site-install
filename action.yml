@@ -19,12 +19,19 @@ inputs:
 runs: 
   using: composite
   steps:
+    - name: echo inputs
+      run: |
+        echo "aws-role: ${{ inputs.aws-role }}"
+        echo "aws-region: ${{ inputs.aws-region }}"
+        echo "ssh-key: ${{ inputs.ssh-key }}"
+        echo "composer-auth: ${{ inputs.composer-auth }}"
+      shell: bash
     - name: Checkout PR branch
       uses: actions/checkout@v4
       with:
         ref: ${{ github.event.pull_request.head.sha }}
     - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1-node16
+      uses: aws-actions/configure-aws-credentials@v3
       with:
         role-to-assume: ${{ inputs.aws-role }}
         aws-region: ${{ inputs.aws-region }}
@@ -51,4 +58,3 @@ runs:
       run: |
         ddev composer install
         ddev install-site
-        
