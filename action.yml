@@ -18,6 +18,17 @@ inputs:
 runs: 
   using: composite
   steps:
+    - name: echo inputs
+      run: |
+        echo ${{ inputs.ECR_PUSH_ROLE }}
+        echo ${{ inputs.ECR_AWS_REGION }}
+        echo ${{ inputs.COMPOSER_SSH_KEY }}
+        echo ${{ inputs.COMPOSER_AUTH }}
+      shell: bash
+    - name: Checkout PR branch
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ github.event.pull_request.head.sha }}
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v3
       with:
@@ -27,20 +38,12 @@ runs:
     - name: Login to Amazon ECR
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v2
-      with: 
-        role-to-assume: ${{ inputs.ECR_PUSH_ROLE }}
-        aws-region: ${{ inputs.ECR_AWS_REGION }}
       
     - name: Configure git
       shell: bash
       run: |
         git config --global user.name "GitHub Actions"
         git config --global user.email "
-    
-    - name: Checkout PR branch
-      uses: actions/checkout@v4
-      with:
-        ref: ${{ github.event.pull_request.head.sha }}
 
     - name: Setup Composer credentials
       shell: bash
