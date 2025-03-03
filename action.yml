@@ -1,6 +1,20 @@
 name: Install Drupal
 description: Install Drupal using DDEV to test config
 
+inputs:
+  ECR_PUSH_ROLE:
+    description: 'The role to assume to push to ECR'
+    required: true
+  ECR_AWS_REGION:
+    description: 'The AWS region for ECR'
+    required: true
+  COMPOSER_SSH_KEY:
+    description: 'The SSH key for Composer'
+    required: true
+  COMPOSER_AUTH:
+    description: 'The Composer auth.json file'
+    required: true
+    
 runs: 
   using: composite
   steps:
