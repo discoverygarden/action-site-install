@@ -33,11 +33,11 @@ runs:
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v2
       
-    - name: Configure git
-      shell: bash
-      run: |
-        git config --global user.name "GitHub Actions"
-        git config --global user.email "
+    # - name: Configure git
+    #   shell: bash
+    #   run: |
+    #     git config --global user.name "GitHub Actions"
+    #     git config --global user.email "
 
     - name: Setup Composer credentials
       shell: bash
