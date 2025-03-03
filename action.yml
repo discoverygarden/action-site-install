@@ -1,0 +1,45 @@
+name: Install Drupal
+description: Install Drupal using DDEV to test config
+
+runs: 
+  using: composite
+  steps:
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v3
+      with:
+        role-to-assume: ${{ inputs.ECR_PUSH_ROLE }}
+        aws-region: ${{ inputs.ECR_AWS_REGION }}
+        
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
+      
+    - name: Configure git
+      shell: bash
+      run: |
+        git config --global user.name "GitHub Actions"
+        git config --global user.email "
+    
+    - name: Checkout PR branch
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ github.event.pull_request.head.sha }}
+
+    - name: Setup Composer credentials
+      shell: bash
+      run: |
+        mkdir -p .ddev/homeadditions/.ssh
+        echo "${{ inputs.COMPOSER_SSH_KEY }}" > .ddev/homeadditions/.ssh/id_rsa
+        chmod 700 .ddev/homeadditions/.ssh
+        chmod 600 .ddev/homeadditions/.ssh/id_rsa
+        mkdir -p .ddev/homeadditions/.composer
+        echo '${{ inputs.COMPOSER_AUTH }}' > .ddev/homeadditions/.composer/auth.json
+
+    - name: Setup DDEV
+      uses: ddev/github-action-setup-ddev@v1
+
+    - name: Install unupdated site
+      shell: bash
+      run: |
+        ddev composer install
+        ddev install-site
