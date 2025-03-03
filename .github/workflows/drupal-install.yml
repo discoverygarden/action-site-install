@@ -3,7 +3,8 @@
   on:
     pull_request:
       branches:
-      - "main"
+        - "main"
+  
   jobs:
     updb:
       permissions:
@@ -16,17 +17,22 @@
           with:
             role-to-assume: ${{ vars.ECR_PUSH_ROLE }}
             aws-region: ${{ vars.ECR_AWS_REGION }}
+            
         - name: Login to Amazon ECR
           id: login-ecr
           uses: aws-actions/amazon-ecr-login@v2
+          
         - name: Configure git
           run: |
             git config --global user.name "GitHub Actions"
             git config --global user.email "noreply+githubactions@discoverygarden.ca"
+            
         - name: Checkout main
           uses: actions/checkout@v4
           with:
-            ref: main
+            #checkout pr branch
+            ref: ${{ github.event.pull_request.head.sha }}
+            
         - name: Setup Composer credentials
           run: |
             mkdir -p .ddev/homeadditions/.ssh
@@ -35,18 +41,12 @@
             chmod 600 .ddev/homeadditions/.ssh/id_rsa
             mkdir -p .ddev/homeadditions/.composer
             echo '${{ secrets.COMPOSER_AUTH }}' > .ddev/homeadditions/.composer/auth.json
+          
         - name: Setup DDEV
           uses: ddev/github-action-setup-ddev@v1
+          
         - name: Install unupdated site
           run: |
             ddev composer install
             ddev install-site
-        - name: Checkout pr branch
-          uses: actions/checkout@v4
-          with:
-            clean: false
-            ref: ${{ github.event.pull_request.head.sha }}
-        - name: Update and push changes
-          run: |
-            ddev composer install
-            ddev drush updb -y
+            
