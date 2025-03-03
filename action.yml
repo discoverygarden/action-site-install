@@ -2,17 +2,18 @@ name: Install Drupal
 description: Install Drupal using DDEV to test config
 
 inputs:
-  # ECR_PUSH_ROLE:
-  #   description: 'The role to assume to push to ECR'
-  #   required: true
-  # ECR_AWS_REGION:
-  #   description: 'The AWS region for ECR'
-  #   required: true
-  COMPOSER_SSH_KEY:
-    description: 'The SSH key for Composer'
+  aws-role:
+    description: The arn of the aws role to use with ecr.
     required: true
-  COMPOSER_AUTH:
-    description: 'The Composer auth.json file'
+  aws-region:
+    description: The aws region to use with ecr.
+    required: false
+    default: us-east-1
+  ssh-key:
+    description: The ssh key for composer authentication.
+    required: true
+  composer-auth:
+    description: Json formatted composer auth data.
     required: true
 
 runs: 
@@ -25,8 +26,8 @@ runs:
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v3
       with:
-        role-to-assume: ${{ secrets.ECR_PUSH_ROLE }}
-        aws-region: us-east-1
+        role-to-assume: ${{ inputs.aws-role }}
+        aws-region: ${{ inputs.aws-region }}
         
     - name: Login to Amazon ECR
       id: login-ecr
@@ -42,11 +43,11 @@ runs:
       shell: bash
       run: |
         mkdir -p .ddev/homeadditions/.ssh
-        echo "${{ inputs.COMPOSER_SSH_KEY }}" > .ddev/homeadditions/.ssh/id_rsa
+        echo "${{ inputs.ssh-key }}" > .ddev/homeadditions/.ssh/id_rsa
         chmod 700 .ddev/homeadditions/.ssh
         chmod 600 .ddev/homeadditions/.ssh/id_rsa
         mkdir -p .ddev/homeadditions/.composer
-        echo '${{ inputs.COMPOSER_AUTH }}' > .ddev/homeadditions/.composer/auth.json
+        echo '${{ inputs.composer-auth }}' > .ddev/homeadditions/.composer/auth.json
 
     - name: Setup DDEV
       uses: ddev/github-action-setup-ddev@v1
