@@ -3,7 +3,8 @@ github action to install drupal site in CI to validate config
 
 # implementation
 
-```name: Test Install Drupal Site
+```yaml
+name: Test Install Drupal Site
 
 permissions:
   id-token: write
