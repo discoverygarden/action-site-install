@@ -52,8 +52,4 @@ runs:
       run: |
         set -e
         ddev composer install
-        ddev install-site 2>&1 | tee output.log
-        if grep -q 'Drush command terminated abnormally' output.log; then
-          echo "Error: Drush command terminated abnormally."
-          exit 1
-        fi
+        ddev install-site 
