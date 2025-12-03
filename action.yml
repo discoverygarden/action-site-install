@@ -11,7 +11,7 @@ inputs:
     default: us-east-1
   ssh-key:
     description: The ssh key for composer authentication.
-    required: true
+    required: false
   composer-auth:
     description: Json formatted composer auth data.
     required: true
@@ -34,15 +34,20 @@ runs:
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v2
       
-    - name: Setup Composer credentials
+    - name: Setup Composer auth.json
+      shell: bash
+      run: |
+        mkdir -p .ddev/homeadditions/.composer
+        echo '${{ inputs.composer-auth }}' > .ddev/homeadditions/.composer/auth.json
+
+    - name: Setup Composer ssh keys
+      if:  inputs.ssh-key
       shell: bash
       run: |
         mkdir -p .ddev/homeadditions/.ssh
         echo "${{ inputs.ssh-key }}" > .ddev/homeadditions/.ssh/id_rsa
         chmod 700 .ddev/homeadditions/.ssh
         chmod 600 .ddev/homeadditions/.ssh/id_rsa
-        mkdir -p .ddev/homeadditions/.composer
-        echo '${{ inputs.composer-auth }}' > .ddev/homeadditions/.composer/auth.json
 
     - name: Setup DDEV
       uses: ddev/github-action-setup-ddev@v1
