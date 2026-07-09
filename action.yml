@@ -51,6 +51,9 @@ runs:
 
     - name: Setup DDEV
       uses: ddev/github-action-setup-ddev@v1
+      with:
+        # XXX: The default `https://ddev.com/install.sh` started 504ing.
+        installScriptUrl: "https://raw.githubusercontent.com/ddev/ddev/main/scripts/install_ddev.sh"
 
     - name: Install unupdated site
       shell: bash
