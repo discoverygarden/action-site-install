@@ -25,14 +25,14 @@ runs:
         ref: ${{ github.event.pull_request.head.sha }}
     
     - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v4
+      uses: aws-actions/configure-aws-credentials@cbe3b392738ccf3f987d68400dafcf4b0624a56c # v6.2.4
       with:
         role-to-assume: ${{ inputs.aws-role }}
         aws-region: ${{ inputs.aws-region }}
 
     - name: Login to Amazon ECR
       id: login-ecr
-      uses: aws-actions/amazon-ecr-login@v2
+      uses: aws-actions/amazon-ecr-login@03f1aad4c6c7ffd436567f42f9384779290529bd # v2.1.7
       
     - name: Setup Composer auth.json
       shell: bash
@@ -50,7 +50,7 @@ runs:
         chmod 600 .ddev/homeadditions/.ssh/id_rsa
 
     - name: Setup DDEV
-      uses: ddev/github-action-setup-ddev@v1
+      uses: ddev/github-action-setup-ddev@fdf2f5c97943bae638f31df6df86f1defa6210c0 # v1.12.1
       with:
         # XXX: The default `https://ddev.com/install.sh` started 504ing.
         installScriptUrl: "https://raw.githubusercontent.com/ddev/ddev/main/scripts/install_ddev.sh"
