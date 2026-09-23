@@ -18,6 +18,7 @@ inputs:
   ref:
     description: "The reference at which to test the installation. Defaults according to actions/checkout's ref behavior."
     required: false
+    default: ""
 
 runs: 
   using: composite
